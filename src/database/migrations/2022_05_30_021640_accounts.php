@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('accounts', function (Blueprint $table) {
-            $table->increments('id');
+            $table->unsignedInteger('id');
             $table->float('amount')->default(0);
             $table->timestamps();
         });

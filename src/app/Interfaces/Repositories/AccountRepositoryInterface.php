@@ -6,4 +6,5 @@ namespace App\Interfaces\Repositories;
 
 interface AccountRepositoryInterface
 {
+    public function resetAll(): void;
 }

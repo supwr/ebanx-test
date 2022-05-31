@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\ValueObjects\Exceptions;
 
 use Exception;
+use Throwable;
 
 class InvalidAmountException extends Exception
 {

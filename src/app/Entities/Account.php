@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
-use App\Interfaces\Stringable;
+use App\Interfaces\Arrayable;
+use App\ValueObjects\Amount;
 
-class Account implements Stringable
+class Account implements Arrayable
 {
     public function __construct(
         public ?int $id,
-        public float $amount
+        public Amount $amount
     ) {
     }
 
@@ -18,7 +19,7 @@ class Account implements Stringable
     {
         return [
             'id' => $this->id,
-            'amount' => $this->amount
+            'amount' => $this->amount->toFloat()
         ];
     }
 }
