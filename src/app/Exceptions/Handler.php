@@ -34,8 +34,15 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (Throwable $e) {
+            return response(
+                [
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'trace' => $e->getTraceAsString()
+                ],
+                $e->getCode() ?: 500
+            );
         });
     }
 }

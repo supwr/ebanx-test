@@ -31,10 +31,11 @@ class TransactionRepository implements TransactionRepositoryInterface
             TransactionModel::create([
                 'type' => $transaction->type->toString(),
                 'amount' => $transaction->amount->toFloat(),
-                'origin' => $transaction->origin->id,
-                'destination' => $transaction->destination->id
+                'origin' => $transaction->origin->toInt(),
+                'destination' => $transaction->destination->toInt()
             ]);
         } catch(Throwable $throwable) {
+            dd($throwable);
             throw new TransactionRepositoryException(
                 message: 'Error inserting new transaction',
                 code: 500,

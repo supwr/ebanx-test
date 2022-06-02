@@ -14,6 +14,7 @@ class Account extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'id',
         'amount'
     ];
 }

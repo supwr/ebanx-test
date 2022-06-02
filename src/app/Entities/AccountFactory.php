@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entities;
 
 use App\Utils\Mapping;
+use App\ValueObjects\AccountId;
 use App\ValueObjects\Amount;
 
 class AccountFactory
@@ -18,9 +19,10 @@ class AccountFactory
     public static function fromArray(array $data): Account
     {
         $amount = self::getFloat($data, 'amount');
+        $id = self::getInt($data, 'id');
 
         return new Account(
-            id: self::getInt($data, 'id'),
+            id: AccountId::fromInt($id),
             amount: Amount::fromFloat($amount)
         );
     }

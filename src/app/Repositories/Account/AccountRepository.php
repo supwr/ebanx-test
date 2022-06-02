@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Account;
 
 use App\Entities\Account;
+use App\Entities\AccountFactory;
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Models\Account as AccountModel;
 use App\Repositories\Exceptions\AccountRepositoryException;
@@ -19,10 +20,24 @@ class AccountRepository implements AccountRepositoryInterface
     {
     }
 
-
-    public function getAccountById(int $id): Account
+    /**
+     * @param int $id
+     * @return Account|null
+     */
+    public function getAccountById(int $id): ?Account
     {
-        return $this->model->find();
+        $account = $this->model->find($id);
+
+        if (empty($account)) {
+            return null;
+        }
+
+        return AccountFactory::fromArray(
+            [
+                'id' => $account['id'],
+                'amount' => $account['amount']
+            ]
+        );
     }
 
     /**
@@ -34,12 +49,13 @@ class AccountRepository implements AccountRepositoryInterface
     {
         try{
             AccountModel::create([
-                'id' => $account->id,
+                'id' => $account->id->toInt(),
                 'amount' => $account->amount->toFloat()
             ]);
         } catch (Throwable $throwable) {
+            dd($throwable);
             throw new AccountRepositoryException(
-                message: sprintf('Error creating account of id [%s]', $account->id),
+                message: sprintf('Error creating account of id [%s]', $account->id->toInt()),
                 code: 500,
                 previous: $throwable
             );
@@ -55,13 +71,13 @@ class AccountRepository implements AccountRepositoryInterface
     {
         try {
             $this->model
-                ->find($account->id)
+                ->find($account->id->toInt())
                 ->update([
-                   'balance' => $account->amount->toFloat()
+                   'amount' => $account->amount->toFloat()
                 ]);
         } catch (Throwable $throwable) {
             throw new AccountRepositoryException(
-                message: sprintf('Error updating balance for account of id [%s]', $account->id),
+                message: sprintf('Error updating balance for account of id [%s]', $account->id->toInt()),
                 code: 500,
                 previous: $throwable
             );

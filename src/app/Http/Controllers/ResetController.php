@@ -11,7 +11,7 @@ use Illuminate\Routing\Controller as BaseController;
 class ResetController extends BaseController
 {
     public function __construct(
-//        private ResetBalanceService $resetBalanceService
+        private ResetBalanceService $resetBalanceService
     )
     {
 
@@ -21,8 +21,7 @@ class ResetController extends BaseController
      */
     public function reset(): JsonResponse
     {
-//        $this->resetBalanceService->reset();
-
+        $this->resetBalanceService->reset();
         return response()->json([]);
     }
 }
