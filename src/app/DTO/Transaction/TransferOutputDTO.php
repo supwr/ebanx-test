@@ -28,11 +28,11 @@ class TransferOutputDTO implements OutputDTOInterface
     {
         return [
             'origin' => [
-                'id' => $this->originAccountId,
+                'id' => (string) $this->originAccountId,
                 'balance' => $this->originAccountBalance
             ],
             'destination' => [
-                'id' => $this->destinationAccountId,
+                'id' => (string) $this->destinationAccountId,
                 'balance' => $this->destinationAccountBalance
             ]
         ];

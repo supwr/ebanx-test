@@ -33,7 +33,7 @@ class DepositOutputDTO extends DataTransferObject implements OutputDTOInterface
     {
         return [
             'destination' => [
-                'id' => $this->accountId,
+                'id' => (string) $this->accountId,
                 'balance' => $this->balance
             ]
         ];

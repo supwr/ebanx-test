@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Balance\ResetBalanceService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 
 class ResetController extends BaseController
@@ -17,9 +18,9 @@ class ResetController extends BaseController
     /**
      * @return JsonResponse
      */
-    public function reset(): JsonResponse
+    public function reset(): Response
     {
         $this->resetBalanceService->reset();
-        return response()->json([]);
+        return response('OK');
     }
 }

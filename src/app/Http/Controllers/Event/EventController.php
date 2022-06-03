@@ -21,6 +21,7 @@ use App\Services\Exceptions\AccountNotFoundException;
 use App\ValueObjects\TransactionType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class EventController extends Controller
 {
@@ -53,7 +54,7 @@ class EventController extends Controller
         };
 
         if ($response instanceof OutputDTOInterface) {
-            return response()->json($response->toArray());
+            return response()->json($response->toArray(), ResponseAlias::HTTP_CREATED);
         }
 
         return $response;
@@ -72,7 +73,7 @@ class EventController extends Controller
         try {
             $this->withdrawService->withdraw($transaction);
         } catch (AccountNotFoundException $e) {
-            return response(0, 404);
+            return response(0, ResponseAlias::HTTP_NOT_FOUND);
         }
 
         $balance = $this->balanceService->getBalance($transaction->origin->toInt());
@@ -90,7 +91,7 @@ class EventController extends Controller
         try {
             $this->transferService->transfer($transaction);
         } catch (AccountNotFoundException $e) {
-            return response(0, 404);
+            return response(0, ResponseAlias::HTTP_NOT_FOUND);
         }
 
         $originBalance = $this->balanceService->getBalance($transaction->origin->toInt());

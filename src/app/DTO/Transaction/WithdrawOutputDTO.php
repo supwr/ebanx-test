@@ -12,4 +12,17 @@ class WithdrawOutputDTO extends DepositOutputDTO implements OutputDTOInterface
     ) {
         parent::__construct($this->accountId, $this->balance);
     }
+
+    /**
+     * @return array[]
+     */
+    public function toArray(): array
+    {
+        return [
+            'origin' => [
+                'id' => (string) $this->accountId,
+                'balance' => $this->balance
+            ]
+        ];
+    }
 }
