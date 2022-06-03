@@ -38,8 +38,6 @@ class Handler extends ExceptionHandler
             return response(
                 [
                     'error' => $e->getMessage(),
-                    'code' => $e->getCode(),
-                    'trace' => $e->getTrace()
                 ],
                 $e->getCode() ?: 500
             );

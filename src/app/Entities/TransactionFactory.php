@@ -18,8 +18,8 @@ class TransactionFactory
     {
         $amount = self::getFloat($data, 'amount');
         $transactionType = self::getString($data, 'type');
-        $origin = self::getInt($data, 'origin');
-        $destination = self::getInt($data, 'destination');
+        $origin = self::getIntOrNull($data, 'origin');
+        $destination = self::getIntOrNull($data, 'destination');
         $createdAt = !empty(self::getString($data, 'created_at'))
             ? new DateTimeImmutable(self::getString($data, 'created_at'))
             : null;
@@ -28,8 +28,8 @@ class TransactionFactory
             id: self::getIntOrNull($data, 'id'),
             type: TransactionType::fromString($transactionType),
             amount: Amount::fromFloat($amount),
-            origin: !empty($origin) ? AccountId::fromInt($origin) : null,
-            destination: !empty($destination) ? AccountId::fromInt($destination) : null,
+            origin: !is_null($origin) ? AccountId::fromInt($origin) : null,
+            destination: !is_null($destination) ? AccountId::fromInt($destination) : null,
             createdAt: $createdAt
         );
     }

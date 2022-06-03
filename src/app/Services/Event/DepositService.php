@@ -17,10 +17,12 @@ class DepositService
     /**
      * @param AccountRepositoryInterface $accountRepository
      * @param RecordTransactionService $transactionService
+     * @param CreateAccountService $createAccountService
      */
     public function __construct(
         private AccountRepositoryInterface $accountRepository,
-        private RecordTransactionService $transactionService
+        private RecordTransactionService $transactionService,
+        private CreateAccountService $createAccountService
     ) {
     }
 
@@ -35,7 +37,7 @@ class DepositService
             $account = $this->accountRepository->getAccountById($transaction->destination->toInt());
 
             if (!$account) {
-                $this->createAccount($transaction);
+                $this->createAccountService->createAccount($transaction);
                 return;
             }
 
@@ -46,32 +48,9 @@ class DepositService
             $this->accountRepository->updateBalance($account);
             $this->transactionService->recordTransaction($transaction);
         } catch (Throwable $throwable) {
+            dd($throwable);
             throw new DepositServiceException(
                 message: sprintf('Error executing deposit to account of id [%s]', $transaction->destination->toInt()),
-                code: 500,
-                previous: $throwable
-            );
-        }
-    }
-
-    /**
-     * @param Transaction $transaction
-     * @return void
-     * @throws DepositServiceException
-     */
-    private function createAccount(Transaction $transaction): void
-    {
-        try {
-            $account = AccountFactory::fromArray([
-                'id' => $transaction->destination->toInt(),
-                'amount' => $transaction->amount->toFloat(),
-            ]);
-
-            $this->accountRepository->createAccount($account);
-            $this->transactionService->recordTransaction($transaction);
-        } catch (Throwable $throwable) {
-            throw new DepositServiceException(
-                message: sprintf('Error creating account of id [%s]', $transaction->destination->toInt()),
                 code: 500,
                 previous: $throwable
             );

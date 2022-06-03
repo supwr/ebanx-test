@@ -4,33 +4,25 @@ declare(strict_types=1);
 
 namespace App\Services\Event;
 
+use App\Entities\Account;
 use App\Entities\Transaction;
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Services\Exceptions\AccountNotFoundException;
 use App\Services\Exceptions\TransferServiceException;
-use App\Services\Exceptions\WithdrawServiceException;
 use App\Services\Transaction\RecordTransactionService;
 use App\ValueObjects\Amount;
 use Throwable;
 
 class TransferService
 {
-    /**
-     * @param AccountRepositoryInterface $accountRepository
-     * @param RecordTransactionService $transactionService
-     */
     public function __construct(
         private AccountRepositoryInterface $accountRepository,
-        private RecordTransactionService $transactionService
+        private RecordTransactionService $transactionService,
+        private CreateAccountService $createAccountService
     ) {
     }
 
-    /**
-     * @param Transaction $transaction
-     * @return void
-     * @throws AccountNotFoundException
-     * @throws TransferServiceException
-     */
+
     public function transfer(Transaction $transaction): void
     {
         $originAccount = !empty($transaction->origin)
@@ -47,12 +39,6 @@ class TransferService
             );
         }
 
-        if (is_null($destinationAccount)) {
-            $this->throwAccountNotFoundException(
-                sprintf('Destination account of id [%s] not found', $transaction->destination?->toInt())
-            );
-        }
-
         if ($transaction->amount->toFloat() > $originAccount->amount->toFloat()) {
             throw new TransferServiceException(
                 message: sprintf(
@@ -65,17 +51,9 @@ class TransferService
             );
         }
 
-        $originAccount->amount = Amount::fromFloat(
-            $originAccount->amount->toFloat() - $transaction->amount->toFloat()
-        );
-
-        $destinationAccount->amount = Amount::fromFloat(
-            $destinationAccount->amount->toFloat() + $transaction->amount->toFloat()
-        );
-
         try {
-            $this->accountRepository->updateBalance($originAccount);
-            $this->accountRepository->updateBalance($destinationAccount);
+            $this->updateOriginAccount($originAccount, $transaction);
+            $this->updateDestinationAccount($destinationAccount, $transaction);
 
             $this->transactionService->recordTransaction($transaction);
         } catch (Throwable $throwable) {
@@ -85,6 +63,41 @@ class TransferService
                 previous: $throwable
             );
         }
+    }
+
+    /**
+     * @param Account $originAccount
+     * @param Transaction $transaction
+     * @return void
+     */
+    private function updateOriginAccount(Account $originAccount, Transaction $transaction): void
+    {
+        $originAccount->amount = Amount::fromFloat(
+            $originAccount->amount->toFloat() - $transaction->amount->toFloat()
+        );
+
+        $this->accountRepository->updateBalance($originAccount);
+    }
+
+    /**
+     * @param Account|null $destinationAccount
+     * @param Transaction $transaction
+     * @return void
+     * @throws \App\Services\Exceptions\CreateAccountServiceException
+     */
+    private function updateDestinationAccount(?Account $destinationAccount, Transaction $transaction): void
+    {
+        if (is_null($destinationAccount)) {
+            $this->createAccountService->createAccount($transaction);
+            $destinationAccount = $this->accountRepository->getAccountById($transaction->destination->toInt());
+            return;
+        }
+
+        $destinationAccount->amount = Amount::fromFloat(
+            $destinationAccount->amount->toFloat() + $transaction->amount->toFloat()
+        );
+
+        $this->accountRepository->updateBalance($destinationAccount);
     }
 
     /**
