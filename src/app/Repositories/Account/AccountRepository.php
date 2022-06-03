@@ -53,7 +53,6 @@ class AccountRepository implements AccountRepositoryInterface
                 'amount' => $account->amount->toFloat()
             ]);
         } catch (Throwable $throwable) {
-            dd($throwable);
             throw new AccountRepositoryException(
                 message: sprintf('Error creating account of id [%s]', $account->id->toInt()),
                 code: 500,

@@ -48,7 +48,6 @@ class DepositService
             $this->accountRepository->updateBalance($account);
             $this->transactionService->recordTransaction($transaction);
         } catch (Throwable $throwable) {
-            dd($throwable);
             throw new DepositServiceException(
                 message: sprintf('Error executing deposit to account of id [%s]', $transaction->destination->toInt()),
                 code: 500,

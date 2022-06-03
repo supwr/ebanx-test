@@ -34,7 +34,6 @@ class TransactionRepository implements TransactionRepositoryInterface
                 'destination' => $transaction->destination?->toInt()
             ]);
         } catch (Throwable $throwable) {
-            dd($throwable);
             throw new TransactionRepositoryException(
                 message: 'Error inserting new transaction',
                 code: 500,

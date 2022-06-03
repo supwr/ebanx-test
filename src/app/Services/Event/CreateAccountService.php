@@ -7,6 +7,7 @@ use App\Entities\Transaction;
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Services\Exceptions\CreateAccountServiceException;
 use App\Services\Transaction\RecordTransactionService;
+use Throwable;
 
 class CreateAccountService
 {

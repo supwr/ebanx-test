@@ -10,7 +10,7 @@ use Throwable;
 class RecordTransactionServiceException extends Exception
 {
     public function __construct(
-        string $message = 'Error making deposit',
+        string $message = 'Error recording transaction',
         int $code = 500,
         ?Throwable $previous = null
     ) {
