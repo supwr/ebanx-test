@@ -2,6 +2,7 @@ build:
 	docker-compose build --no-cache
 
 setup:
+	docker exec -it ebanx-php-fpm composer install
 	docker exec -it ebanx-php-fpm php artisan migrate
 
 start-app:

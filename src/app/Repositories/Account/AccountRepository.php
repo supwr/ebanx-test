@@ -92,7 +92,6 @@ class AccountRepository implements AccountRepositoryInterface
         try {
             $this->model->truncate();
         } catch (Throwable $throwable) {
-            dd($throwable);
             throw new AccountRepositoryException(
                 message: 'Error reseting accounts',
                 code: 500,
