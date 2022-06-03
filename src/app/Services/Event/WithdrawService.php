@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Event;
 
 use App\Entities\Transaction;
-use App\Interfaces\Repositories\AccountRepositoryInterface;
+use App\Services\Account\GetAccountService;
+use App\Services\Account\UpdateAccountBalanceService;
 use App\Services\Exceptions\AccountNotFoundException;
 use App\Services\Exceptions\WithdrawServiceException;
 use App\Services\Transaction\RecordTransactionService;
@@ -15,11 +16,13 @@ use Throwable;
 class WithdrawService
 {
     /**
-     * @param AccountRepositoryInterface $accountRepository
+     * @param GetAccountService $accountService
+     * @param UpdateAccountBalanceService $updateAccountBalanceService
      * @param RecordTransactionService $transactionService
      */
     public function __construct(
-        private AccountRepositoryInterface $accountRepository,
+        private GetAccountService $accountService,
+        private UpdateAccountBalanceService $updateAccountBalanceService,
         private RecordTransactionService $transactionService
     ) {
     }
@@ -33,7 +36,7 @@ class WithdrawService
     public function withdraw(Transaction $transaction): void
     {
 
-        $account = $this->accountRepository->getAccountById($transaction->origin->toInt());
+        $account = $this->accountService->getAccountById($transaction->origin->toInt());
 
         if (is_null($account)) {
             throw new AccountNotFoundException(
@@ -56,7 +59,7 @@ class WithdrawService
         $account->amount = Amount::fromFloat($account->amount->toFloat() - $transaction->amount->toFloat());
 
         try {
-            $this->accountRepository->updateBalance($account);
+            $this->updateAccountBalanceService->updateBalance($account);
             $this->transactionService->recordTransaction($transaction);
         } catch (Throwable $throwable) {
             throw new WithdrawServiceException(

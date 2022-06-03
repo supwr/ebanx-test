@@ -6,7 +6,9 @@ namespace App\Services\Event;
 
 use App\Entities\Account;
 use App\Entities\Transaction;
-use App\Interfaces\Repositories\AccountRepositoryInterface;
+use App\Services\Account\CreateAccountService;
+use App\Services\Account\GetAccountService;
+use App\Services\Account\UpdateAccountBalanceService;
 use App\Services\Exceptions\AccountNotFoundException;
 use App\Services\Exceptions\TransferServiceException;
 use App\Services\Transaction\RecordTransactionService;
@@ -15,22 +17,33 @@ use Throwable;
 
 class TransferService
 {
+    /**
+     * @param GetAccountService $accountService
+     * @param RecordTransactionService $transactionService
+     * @param CreateAccountService $createAccountService
+     */
     public function __construct(
-        private AccountRepositoryInterface $accountRepository,
+        private GetAccountService $accountService,
+        private UpdateAccountBalanceService $accountBalanceService,
         private RecordTransactionService $transactionService,
         private CreateAccountService $createAccountService
     ) {
     }
 
-
+    /**
+     * @param Transaction $transaction
+     * @return void
+     * @throws AccountNotFoundException
+     * @throws TransferServiceException
+     */
     public function transfer(Transaction $transaction): void
     {
         $originAccount = !empty($transaction->origin)
-            ? $this->accountRepository->getAccountById($transaction->origin->toInt())
+            ? $this->accountService->getAccountById($transaction->origin->toInt())
             : null;
 
         $destinationAccount = !empty($transaction->destination)
-            ? $this->accountRepository->getAccountById($transaction->destination->toInt())
+            ? $this->accountService->getAccountById($transaction->destination->toInt())
             : null;
 
         if (is_null($originAccount)) {
@@ -58,7 +71,11 @@ class TransferService
             $this->transactionService->recordTransaction($transaction);
         } catch (Throwable $throwable) {
             throw new TransferServiceException(
-                message: sprintf('Error executing transfer from account of id [%s] to account of id [%s]', $transaction->origin->toInt(), $transaction->destination->toInt()),
+                message: sprintf(
+                    'Error executing transfer from account of id [%s] to account of id [%s]',
+                    $transaction->origin->toInt(),
+                    $transaction->destination->toInt()
+                ),
                 code: 500,
                 previous: $throwable
             );
@@ -76,7 +93,7 @@ class TransferService
             $originAccount->amount->toFloat() - $transaction->amount->toFloat()
         );
 
-        $this->accountRepository->updateBalance($originAccount);
+        $this->accountBalanceService->updateBalance($originAccount);
     }
 
     /**
@@ -89,7 +106,6 @@ class TransferService
     {
         if (is_null($destinationAccount)) {
             $this->createAccountService->createAccount($transaction);
-            $destinationAccount = $this->accountRepository->getAccountById($transaction->destination->toInt());
             return;
         }
 
@@ -97,7 +113,7 @@ class TransferService
             $destinationAccount->amount->toFloat() + $transaction->amount->toFloat()
         );
 
-        $this->accountRepository->updateBalance($destinationAccount);
+        $this->accountBalanceService->updateBalance($destinationAccount);
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Event;
 
 use App\Entities\Transaction;
+use App\Services\Account\CreateAccountService;
 use App\Services\Account\GetAccountService;
 use App\Services\Account\UpdateAccountBalanceService;
 use App\Services\Exceptions\DepositServiceException;
@@ -14,7 +15,6 @@ use Throwable;
 
 class DepositService
 {
-
     /**
      * @param GetAccountService $getAccountService
      * @param UpdateAccountBalanceService $updateBalanceService

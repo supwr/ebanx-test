@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Event;
+namespace App\Services\Account;
 
 use App\Entities\AccountFactory;
 use App\Entities\Transaction;
@@ -11,9 +11,13 @@ use Throwable;
 
 class CreateAccountService
 {
+    /**
+     * @param RecordTransactionService $transactionService
+     * @param AccountRepositoryInterface $accountRepository
+     */
     public function __construct(
+        private RecordTransactionService $transactionService,
         private AccountRepositoryInterface $accountRepository,
-        private RecordTransactionService $transactionService
     ) {
     }
 
