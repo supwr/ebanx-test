@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DTO\Transaction;
+namespace App\Interfaces\DTO;
 
 interface OutputDTOInterface
 {

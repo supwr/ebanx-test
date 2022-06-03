@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\DTO\Transaction;
 
+use App\Interfaces\DTO\OutputDTOInterface;
+
 class WithdrawOutputDTO extends DepositOutputDTO implements OutputDTOInterface
 {
     public function __construct(

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Event;
 
 use App\DTO\Transaction\DepositOutputDTO;
-use App\DTO\Transaction\OutputDTOInterface;
 use App\DTO\Transaction\TransferOutputDTO;
 use App\DTO\Transaction\WithdrawOutputDTO;
 use App\Entities\Transaction;
@@ -13,6 +12,7 @@ use App\Entities\TransactionFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Exceptions\InvalidTransactionTypeException;
 use App\Http\Requests\TransactionRequest;
+use App\Interfaces\DTO\OutputDTOInterface;
 use App\Services\Balance\GetBalanceService;
 use App\Services\Event\DepositService;
 use App\Services\Event\TransferService;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTO\Transaction;
 
+use App\Interfaces\DTO\OutputDTOInterface;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class DepositOutputDTO extends DataTransferObject implements OutputDTOInterface
