@@ -33,19 +33,23 @@ class TransferService
      */
     public function transfer(Transaction $transaction): void
     {
+        $originAccount = !empty($transaction->origin)
+            ? $this->accountRepository->getAccountById($transaction->origin->toInt())
+            : null;
 
-        $originAccount = $this->accountRepository->getAccountById($transaction->origin->toInt());
-        $destinationAccount = $this->accountRepository->getAccountById($transaction->destination->toInt());
+        $destinationAccount = !empty($transaction->destination)
+            ? $this->accountRepository->getAccountById($transaction->destination->toInt())
+            : null;
 
         if (is_null($originAccount)) {
             $this->throwAccountNotFoundException(
-                sprintf('Origin account of id [%s] not found', $transaction->origin->toInt())
+                sprintf('Origin account of id [%s] not found', $transaction->origin?->toInt())
             );
         }
 
         if (is_null($destinationAccount)) {
             $this->throwAccountNotFoundException(
-                sprintf('Destination account of id [%s] not found', $transaction->destination->toInt())
+                sprintf('Destination account of id [%s] not found', $transaction->destination?->toInt())
             );
         }
 
@@ -66,7 +70,7 @@ class TransferService
         );
 
         $destinationAccount->amount = Amount::fromFloat(
-            $originAccount->amount->toFloat() + $transaction->amount->toFloat()
+            $destinationAccount->amount->toFloat() + $transaction->amount->toFloat()
         );
 
         try {

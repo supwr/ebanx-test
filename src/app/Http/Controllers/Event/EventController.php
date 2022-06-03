@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Event;
 
 use App\DTO\Transaction\DepositOutputDTO;
 use App\DTO\Transaction\OutputDTOInterface;
+use App\DTO\Transaction\TransferOutputDTO;
 use App\DTO\Transaction\WithdrawOutputDTO;
 use App\Entities\Transaction;
 use App\Entities\TransactionFactory;
@@ -82,7 +83,7 @@ class EventController extends Controller
         ]);
     }
 
-    private function transferFromAccount(TransactionRequest $request): WithdrawOutputDTO|Response
+    private function transferFromAccount(TransactionRequest $request): TransferOutputDTO|Response
     {
         $transaction = $this->getTransactionFromRequest($request);
 
@@ -92,11 +93,14 @@ class EventController extends Controller
             return response(0, 404);
         }
 
-        $balance = $this->balanceService->getBalance($transaction->origin->toInt());
+        $originBalance = $this->balanceService->getBalance($transaction->origin->toInt());
+        $destinationBalance = $this->balanceService->getBalance($transaction->destination->toInt());
 
-        return WithdrawOutputDTO::fromArray([
-            'account_id' => $transaction->origin->toInt(),
-            'balance' => $balance->toFloat()
+        return TransferOutputDTO::fromArray([
+            'origin_account_id' => $transaction->origin->toInt(),
+            'origin_account_balance' => $originBalance->toFloat(),
+            'destination_account_id' => $transaction->destination->toInt(),
+            'destination_account_balance' => $destinationBalance->toFloat()
         ]);
     }
 

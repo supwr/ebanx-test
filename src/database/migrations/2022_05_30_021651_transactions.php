@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
-            $table->unsignedInteger('origin');
-            $table->unsignedInteger('destination');
+            $table->unsignedInteger('origin')->nullable();
+            $table->unsignedInteger('destination')->nullable();
             $table->float('amount')->default(0);
             $table->index('origin');
             $table->index('destination');
