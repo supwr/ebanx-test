@@ -16,8 +16,8 @@ class Transaction implements Arrayable
         public ?int $id,
         public TransactionType $type,
         public Amount $amount,
-        public AccountId $origin,
-        public AccountId $destination,
+        public ?AccountId $origin,
+        public ?AccountId $destination,
         public ?DateTimeImmutable $createdAt
     ) {
     }
@@ -28,8 +28,8 @@ class Transaction implements Arrayable
             'id' => $this->id,
             'type' => $this->type->toString(),
             'amount' => $this->amount->toFloat(),
-            'origin' => $this->origin->toInt(),
-            'destination' => $this->destination->toInt(),
+            'origin' => $this->origin?->toInt(),
+            'destination' => $this->destination?->toInt(),
             'created_at' => $this->createdAt
         ];
     }

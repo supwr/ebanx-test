@@ -14,7 +14,7 @@ trait Mapping
     public static function getString(array $data, ...$keys): string
     {
         foreach ($keys as $key) {
-            if(isset($data[$key])) {
+            if (isset($data[$key])) {
                 return (string) $data[$key];
             }
         }
@@ -29,7 +29,7 @@ trait Mapping
     public static function getInt(array $data, ...$keys): int
     {
         foreach ($keys as $key) {
-            if(isset($data[$key])) {
+            if (isset($data[$key])) {
                 return (int) $data[$key];
             }
         }
@@ -45,7 +45,7 @@ trait Mapping
     public static function getIntOrNull(array $data, ...$keys): ?int
     {
         foreach ($keys as $key) {
-            if(isset($data[$key])) {
+            if (isset($data[$key])) {
                 return (int) $data[$key];
             }
         }
@@ -61,7 +61,7 @@ trait Mapping
     public static function getFloat(array $data, ...$keys): float
     {
         foreach ($keys as $key) {
-            if(isset($data[$key])) {
+            if (isset($data[$key])) {
                 return (float) $data[$key];
             }
         }

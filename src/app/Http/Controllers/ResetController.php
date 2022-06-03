@@ -12,9 +12,7 @@ class ResetController extends BaseController
 {
     public function __construct(
         private ResetBalanceService $resetBalanceService
-    )
-    {
-
+    ) {
     }
     /**
      * @return JsonResponse

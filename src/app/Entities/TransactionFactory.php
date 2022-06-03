@@ -28,8 +28,8 @@ class TransactionFactory
             id: self::getIntOrNull($data, 'id'),
             type: TransactionType::fromString($transactionType),
             amount: Amount::fromFloat($amount),
-            origin: AccountId::fromInt($origin),
-            destination: AccountId::fromInt($destination),
+            origin: !empty($origin) ? AccountId::fromInt($origin) : null,
+            destination: !empty($destination) ? AccountId::fromInt($destination) : null,
             createdAt: $createdAt
         );
     }

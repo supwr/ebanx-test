@@ -50,7 +50,7 @@ class Amount
      */
     private function isValid(float $amount): bool
     {
-        if ($amount <= 0) {
+        if ($amount < 0) {
             return false;
         }
 

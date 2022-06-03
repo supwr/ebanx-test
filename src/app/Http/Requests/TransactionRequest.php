@@ -29,7 +29,8 @@ class TransactionRequest extends FormRequest
     {
         return [
             'type' => 'string|required',
-            'destination' => 'numeric|required',
+            'destination' => 'exclude_if:type, "withdraw"|required|numeric',
+            'origin' => 'exclude_if:type, "deposit"|required|numeric',
             'amount' => 'numeric|required'
         ];
     }
@@ -43,6 +44,5 @@ class TransactionRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'errors' => $validator->errors()
         ], 400));
-
     }
 }

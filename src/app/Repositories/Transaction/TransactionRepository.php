@@ -17,7 +17,6 @@ class TransactionRepository implements TransactionRepositoryInterface
      */
     public function __construct(private TransactionModel $model)
     {
-
     }
 
     /**
@@ -31,10 +30,10 @@ class TransactionRepository implements TransactionRepositoryInterface
             TransactionModel::create([
                 'type' => $transaction->type->toString(),
                 'amount' => $transaction->amount->toFloat(),
-                'origin' => $transaction->origin->toInt(),
-                'destination' => $transaction->destination->toInt()
+                'origin' => $transaction->origin?->toInt(),
+                'destination' => $transaction->destination?->toInt()
             ]);
-        } catch(Throwable $throwable) {
+        } catch (Throwable $throwable) {
             dd($throwable);
             throw new TransactionRepositoryException(
                 message: 'Error inserting new transaction',
@@ -52,7 +51,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         try {
             TransactionModel::truncate();
-        } catch(Throwable $throwable) {
+        } catch (Throwable $throwable) {
             throw new TransactionRepositoryException(
                 message: 'Error reseting transactions',
                 code: 500,

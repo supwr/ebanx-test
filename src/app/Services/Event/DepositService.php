@@ -21,8 +21,7 @@ class DepositService
     public function __construct(
         private AccountRepositoryInterface $accountRepository,
         private RecordTransactionService $transactionService
-    )
-    {
+    ) {
     }
 
     /**
@@ -32,7 +31,7 @@ class DepositService
      */
     public function deposit(Transaction $transaction): void
     {
-        try{
+        try {
             $account = $this->accountRepository->getAccountById($transaction->destination->toInt());
 
             if (!$account) {
@@ -64,7 +63,7 @@ class DepositService
     {
         try {
             $account = AccountFactory::fromArray([
-                'id' => $transaction->origin->toInt(),
+                'id' => $transaction->destination->toInt(),
                 'amount' => $transaction->amount->toFloat(),
             ]);
 

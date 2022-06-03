@@ -16,8 +16,7 @@ class ResetBalanceService
     public function __construct(
         private AccountRepositoryInterface $accountRepository,
         private TransactionRepositoryInterface $transactionRepository
-    )
-    {
+    ) {
     }
 
     /**

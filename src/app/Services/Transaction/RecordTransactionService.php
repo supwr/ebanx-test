@@ -11,14 +11,12 @@ use Throwable;
 
 class RecordTransactionService
 {
-
     /**
      * @param TransactionRepositoryInterface $transactionRepository
      */
     public function __construct(
         private TransactionRepositoryInterface $transactionRepository
-    )
-    {
+    ) {
     }
 
     /**
@@ -27,7 +25,7 @@ class RecordTransactionService
      */
     public function recordTransaction(Transaction $transaction): void
     {
-        try{
+        try {
             $this->transactionRepository->create($transaction);
         } catch (Throwable $throwable) {
             throw new RecordTransactionServiceException(
