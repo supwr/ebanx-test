@@ -1,10 +1,10 @@
 FROM phpdockerio/php:8.1-fpm
 
-WORKDIR /src
-
 ADD . /src
 
 RUN chown -R www-data:www-data /src
+
+WORKDIR /src/src
 
 RUN apt-get update; \
     apt-get -y --no-install-recommends install php8.1-xdebug; \

@@ -48,7 +48,7 @@ class AccountRepository implements AccountRepositoryInterface
     public function createAccount(Account $account): void
     {
         try {
-            AccountModel::create([
+            $this->model->create([
                 'id' => $account->id->toInt(),
                 'amount' => $account->amount->toFloat()
             ]);
@@ -90,8 +90,9 @@ class AccountRepository implements AccountRepositoryInterface
     public function resetAll(): void
     {
         try {
-            AccountModel::truncate();
+            $this->model->truncate();
         } catch (Throwable $throwable) {
+            dd($throwable);
             throw new AccountRepositoryException(
                 message: 'Error reseting accounts',
                 code: 500,

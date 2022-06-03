@@ -27,7 +27,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function create(Transaction $transaction): void
     {
         try {
-            TransactionModel::create([
+            $this->model->create([
                 'type' => $transaction->type->toString(),
                 'amount' => $transaction->amount->toFloat(),
                 'origin' => $transaction->origin?->toInt(),
@@ -49,7 +49,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     public function resetAll(): void
     {
         try {
-            TransactionModel::truncate();
+            $this->model->truncate();
         } catch (Throwable $throwable) {
             throw new TransactionRepositoryException(
                 message: 'Error reseting transactions',
