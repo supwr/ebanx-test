@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services\Event;
+namespace Tests\Unit\Services\Account;
 
-use App\Entities\AccountFactory;
 use App\Entities\TransactionFactory;
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Interfaces\Repositories\TransactionRepositoryInterface;
 use App\Repositories\Exceptions\AccountRepositoryException;
 use App\Repositories\Exceptions\TransactionRepositoryException;
-use App\Services\Event\CreateAccountService;
+use App\Services\Account\CreateAccountService;
 use App\Services\Exceptions\CreateAccountServiceException;
-use App\Services\Exceptions\RecordTransactionServiceException;
 use App\Services\Transaction\RecordTransactionService;
 use App\ValueObjects\TransactionType;
 use Mockery;
@@ -32,11 +30,11 @@ class CreateAccountServiceTest extends TestCase
             'destination' => 100
         ]);
 
-        $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('createAccount');
         });
 
-        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('create');
         });
 
@@ -50,7 +48,7 @@ class CreateAccountServiceTest extends TestCase
      * @return void
      * @throws CreateAccountServiceException
      */
-    public function testCreateServiceAccountRepositoryException():void
+    public function testCreateServiceAccountRepositoryException(): void
     {
         $this->expectException(CreateAccountServiceException::class);
         $this->expectExceptionCode(500);
@@ -63,12 +61,12 @@ class CreateAccountServiceTest extends TestCase
             'destination' => 100
         ]);
 
-        $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('createAccount')
                 ->andThrow(new AccountRepositoryException(sprintf('Error creating account of id [%s]', 100)));
         });
 
-        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('create');
         });
 
@@ -82,7 +80,7 @@ class CreateAccountServiceTest extends TestCase
      * @return void
      * @throws CreateAccountServiceException
      */
-    public function testCreateServiceTransactionRepositoryException():void
+    public function testCreateServiceTransactionRepositoryException(): void
     {
         $this->expectException(CreateAccountServiceException::class);
         $this->expectExceptionCode(500);
@@ -95,11 +93,11 @@ class CreateAccountServiceTest extends TestCase
             'destination' => 100
         ]);
 
-        $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('createAccount');
         });
 
-        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('create')
                 ->andThrow(new TransactionRepositoryException('Error inserting new transaction'));
         });

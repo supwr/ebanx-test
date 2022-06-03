@@ -10,9 +10,9 @@ use App\Entities\TransactionFactory;
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Interfaces\Repositories\TransactionRepositoryInterface;
 use App\Repositories\Exceptions\AccountRepositoryException;
+use App\Services\Account\CreateAccountService;
 use App\Services\Account\GetAccountService;
 use App\Services\Account\UpdateAccountBalanceService;
-use App\Services\Event\CreateAccountService;
 use App\Services\Event\DepositService;
 use App\Services\Exceptions\DepositServiceException;
 use App\Services\Transaction\RecordTransactionService;
@@ -63,28 +63,29 @@ class DepositServiceTest extends TestCase
         $this->assertNull($depositService->deposit($transaction));
     }
 
-//    /**
-//     * @return void
-//     * @throws \App\Services\Exceptions\DepositServiceException
-//     */
-//    public function testDepositServiceException(): void
-//    {
-//        $this->expectException(DepositServiceException::class);
-//        $this->expectExceptionCode(500);
-//        $this->expectExceptionMessage('Error making deposit');
-//
-//        $this->updateBalanceException = true;
-//
-//        $transaction = TransactionFactory::fromArray([
-//            'amount' => 100,
-//            'type' => TransactionType::DEPOSIT,
-//            'origin' => null,
-//            'destination' => 100
-//        ]);
-//
-//        $depositService = $this->makeDepositService();
-//        $depositService->deposit($transaction);
-//    }
+    /**
+     * @return void
+     * @throws \App\Services\Exceptions\DepositServiceException
+     */
+    public function testDepositServiceException(): void
+    {
+        $this->expectException(DepositServiceException::class);
+        $this->expectExceptionCode(500);
+        $this->expectExceptionMessage(sprintf('Error executing deposit to account of id [%s]', 100));
+
+        $this->updateBalanceException = true;
+        $this->mockAccount = true;
+
+        $transaction = TransactionFactory::fromArray([
+            'amount' => 100,
+            'type' => TransactionType::DEPOSIT,
+            'origin' => null,
+            'destination' => 100
+        ]);
+
+        $depositService = $this->makeDepositService();
+        $depositService->deposit($transaction);
+    }
 
     /**
      * @return DepositService
@@ -111,7 +112,7 @@ class DepositServiceTest extends TestCase
         $account = $this->mockAccount ? self::generateAccount() : null;
         $updateBalanceException = $this->updateBalanceException;
 
-        return Mockery::mock(AccountRepositoryInterface::class, function(Mockery\MockInterface $mock) use ($account, $updateBalanceException){
+        return Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) use ($account, $updateBalanceException) {
             $mock->shouldReceive('getAccountById')
                 ->andReturn($account);
 
@@ -131,7 +132,7 @@ class DepositServiceTest extends TestCase
      */
     private function mockTransactionRepository(): Mockery\MockInterface
     {
-        return Mockery::mock(TransactionRepositoryInterface::class, function(Mockery\MockInterface $mock) {
+        return Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('create');
         });
     }

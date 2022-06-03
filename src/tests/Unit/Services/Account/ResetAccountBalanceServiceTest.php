@@ -12,63 +12,66 @@ use App\Services\Account\ResetAccountBalanceService;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-class ResetAccountBalanceServiceServiceTest extends TestCase
+class ResetAccountBalanceServiceTest extends TestCase
 {
     /**
      * @return void
      */
-    public function testResetBalance(): void
+    public function testResetAll(): void
     {
         $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('resetAll');
         });
 
-        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
+        $mockTransactionRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('resetAll');
         });
 
-        $resetBalanceService = new ResetAccountBalanceService($mockAccountRepository, $transactionAccountRepository);
-
-        $this->assertNull($resetBalanceService->reset());
+        $resetAccountService = new ResetAccountBalanceService($mockAccountRepository, $mockTransactionRepository);
+        $this->assertNull($resetAccountService->reset());
     }
 
     /**
      * @return void
      */
-    public function testAccountRepositoryException(): void
+    public function testResetAllAccountsRepositoryException(): void
     {
         $this->expectException(AccountRepositoryException::class);
-        $this->expectExceptionMessage('Error reseting accounts');
         $this->expectExceptionCode(500);
+        $this->expectExceptionMessage('Error reseting accounts');
 
         $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('resetAll')
                 ->andThrow(new AccountRepositoryException('Error reseting accounts'));
         });
 
-        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class);
-        $resetBalanceService = new ResetAccountBalanceService($mockAccountRepository, $transactionAccountRepository);
-        $resetBalanceService->reset();
+        $mockTransactionRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
+            $mock->shouldReceive('resetAll');
+        });
+
+        $resetAccountService = new ResetAccountBalanceService($mockAccountRepository, $mockTransactionRepository);
+        $resetAccountService->reset();
     }
 
     /**
      * @return void
      */
-    public function testTransactionRepositoryException(): void
+    public function testResetAllTransactionsRepositoryException(): void
     {
         $this->expectException(TransactionRepositoryException::class);
-        $this->expectExceptionMessage('Transaction Repository Exception');
         $this->expectExceptionCode(500);
+        $this->expectExceptionMessage('Error reseting transactions');
 
         $mockAccountRepository = Mockery::mock(AccountRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('resetAll');
         });
 
-        $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
+        $mockTransactionRepository = Mockery::mock(TransactionRepositoryInterface::class, function (Mockery\MockInterface $mock) {
             $mock->shouldReceive('resetAll')
-                ->andThrow(new TransactionRepositoryException('Transaction Repository Exception'));
+                ->andThrow(new TransactionRepositoryException('Error reseting transactions'));
         });
-        $resetBalanceService = new ResetAccountBalanceService($mockAccountRepository, $transactionAccountRepository);
-        $resetBalanceService->reset();
+
+        $resetAccountService = new ResetAccountBalanceService($mockAccountRepository, $mockTransactionRepository);
+        $resetAccountService->reset();
     }
 }

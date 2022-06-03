@@ -12,12 +12,12 @@ use Throwable;
 class CreateAccountService
 {
     /**
-     * @param RecordTransactionService $transactionService
      * @param AccountRepositoryInterface $accountRepository
+     * @param RecordTransactionService $transactionService
      */
     public function __construct(
-        private RecordTransactionService $transactionService,
         private AccountRepositoryInterface $accountRepository,
+        private RecordTransactionService $transactionService,
     ) {
     }
 
