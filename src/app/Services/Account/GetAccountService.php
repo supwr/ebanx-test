@@ -2,19 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Balance;
+namespace App\Services\Account;
 
+use App\Entities\Account;
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Services\Exceptions\BalanceNotFoundException;
 use App\ValueObjects\Amount;
 
-class GetBalanceService
+class GetAccountService
 {
     /**
      * @param AccountRepositoryInterface $accountRepository
      */
     public function __construct(private AccountRepositoryInterface $accountRepository)
     {
+    }
+
+    /**
+     * @param int $id
+     * @return Account|null
+     */
+    public function getAccountById(int $id): ?Account
+    {
+        return $this->accountRepository->getAccountById($id);
     }
 
     /**

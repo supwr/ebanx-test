@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Services\Balance;
+namespace Tests\Unit\Services\Account;
 
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Interfaces\Repositories\TransactionRepositoryInterface;
 use App\Repositories\Exceptions\AccountRepositoryException;
 use App\Repositories\Exceptions\TransactionRepositoryException;
-use App\Services\Balance\ResetBalanceService;
+use App\Services\Account\ResetAccountBalanceService;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-class ResetBalanceServiceServiceTest extends TestCase
+class ResetAccountBalanceServiceServiceTest extends TestCase
 {
     /**
      * @return void
@@ -27,7 +27,7 @@ class ResetBalanceServiceServiceTest extends TestCase
             $mock->shouldReceive('resetAll');
         });
 
-        $resetBalanceService = new ResetBalanceService($mockAccountRepository, $transactionAccountRepository);
+        $resetBalanceService = new ResetAccountBalanceService($mockAccountRepository, $transactionAccountRepository);
 
         $this->assertNull($resetBalanceService->reset());
     }
@@ -47,7 +47,7 @@ class ResetBalanceServiceServiceTest extends TestCase
         });
 
         $transactionAccountRepository = Mockery::mock(TransactionRepositoryInterface::class);
-        $resetBalanceService = new ResetBalanceService($mockAccountRepository, $transactionAccountRepository);
+        $resetBalanceService = new ResetAccountBalanceService($mockAccountRepository, $transactionAccountRepository);
         $resetBalanceService->reset();
     }
 
@@ -68,7 +68,7 @@ class ResetBalanceServiceServiceTest extends TestCase
             $mock->shouldReceive('resetAll')
                 ->andThrow(new TransactionRepositoryException('Transaction Repository Exception'));
         });
-        $resetBalanceService = new ResetBalanceService($mockAccountRepository, $transactionAccountRepository);
+        $resetBalanceService = new ResetAccountBalanceService($mockAccountRepository, $transactionAccountRepository);
         $resetBalanceService->reset();
     }
 }

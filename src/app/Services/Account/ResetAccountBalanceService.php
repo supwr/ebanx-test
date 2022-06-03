@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Services\Balance;
+namespace App\Services\Account;
 
 use App\Interfaces\Repositories\AccountRepositoryInterface;
 use App\Interfaces\Repositories\TransactionRepositoryInterface;
 
-class ResetBalanceService
+class ResetAccountBalanceService
 {
     /**
      * @param AccountRepositoryInterface $accountRepository

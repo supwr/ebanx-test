@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Event;
 
-use App\Entities\AccountFactory;
 use App\Entities\Transaction;
-use App\Interfaces\Repositories\AccountRepositoryInterface;
+use App\Services\Account\GetAccountService;
+use App\Services\Account\UpdateAccountBalanceService;
 use App\Services\Exceptions\DepositServiceException;
 use App\Services\Transaction\RecordTransactionService;
 use App\ValueObjects\Amount;
@@ -14,13 +14,16 @@ use Throwable;
 
 class DepositService
 {
+
     /**
-     * @param AccountRepositoryInterface $accountRepository
+     * @param GetAccountService $getAccountService
+     * @param UpdateAccountBalanceService $updateBalanceService
      * @param RecordTransactionService $transactionService
      * @param CreateAccountService $createAccountService
      */
     public function __construct(
-        private AccountRepositoryInterface $accountRepository,
+        private GetAccountService $getAccountService,
+        private UpdateAccountBalanceService $updateBalanceService,
         private RecordTransactionService $transactionService,
         private CreateAccountService $createAccountService
     ) {
@@ -34,7 +37,7 @@ class DepositService
     public function deposit(Transaction $transaction): void
     {
         try {
-            $account = $this->accountRepository->getAccountById($transaction->destination->toInt());
+            $account = $this->getAccountService->getAccountById($transaction->destination->toInt());
 
             if (!$account) {
                 $this->createAccountService->createAccount($transaction);
@@ -45,7 +48,7 @@ class DepositService
                 $account->amount->toFloat() + $transaction->amount->toFloat()
             );
 
-            $this->accountRepository->updateBalance($account);
+            $this->updateBalanceService->updateBalance($account);
             $this->transactionService->recordTransaction($transaction);
         } catch (Throwable $throwable) {
             throw new DepositServiceException(

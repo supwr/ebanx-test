@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Exceptions\InvalidTransactionTypeException;
 use App\Http\Requests\TransactionRequest;
 use App\Interfaces\DTO\OutputDTOInterface;
+use App\Services\Account\GetAccountService;
 use App\Services\Balance\GetBalanceService;
 use App\Services\Event\DepositService;
 use App\Services\Event\TransferService;
@@ -29,7 +30,7 @@ class EventController extends Controller
         private DepositService $depositService,
         private WithdrawService $withdrawService,
         private TransferService $transferService,
-        private GetBalanceService $balanceService
+        private GetAccountService $accountService
     ) {
     }
 
@@ -76,7 +77,7 @@ class EventController extends Controller
             return response(0, ResponseAlias::HTTP_NOT_FOUND);
         }
 
-        $balance = $this->balanceService->getBalance($transaction->origin->toInt());
+        $balance = $this->accountService->getBalance($transaction->origin->toInt());
 
         return WithdrawOutputDTO::fromArray([
             'account_id' => $transaction->origin->toInt(),
@@ -94,8 +95,8 @@ class EventController extends Controller
             return response(0, ResponseAlias::HTTP_NOT_FOUND);
         }
 
-        $originBalance = $this->balanceService->getBalance($transaction->origin->toInt());
-        $destinationBalance = $this->balanceService->getBalance($transaction->destination->toInt());
+        $originBalance = $this->accountService->getBalance($transaction->origin->toInt());
+        $destinationBalance = $this->accountService->getBalance($transaction->destination->toInt());
 
         return TransferOutputDTO::fromArray([
             'origin_account_id' => $transaction->origin->toInt(),
@@ -117,7 +118,7 @@ class EventController extends Controller
 
         $this->depositService->deposit($transaction);
 
-        $balance = $this->balanceService->getBalance($transaction->destination->toInt());
+        $balance = $this->accountService->getBalance($transaction->destination->toInt());
 
         return DepositOutputDTO::fromArray([
             'account_id' => $transaction->destination->toInt(),
