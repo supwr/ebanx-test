@@ -8,13 +8,13 @@ The API consists of two endpoints, GET /balance, and POST /event. Using your fav
 
 ```$ make build```
 
-### 2 - Setup and install the app dependencies
-
-```$ make setup```
-
-### 3 - Execute the application
+### 2 - Start the application
 
 ```$ make start-app```
+
+### 3 - Setup and install the app dependencies
+
+```$ make setup```
 
 ### 4 - To stop the application
 
