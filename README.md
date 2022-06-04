@@ -16,6 +16,10 @@ The API consists of two endpoints, GET /balance, and POST /event. Using your fav
 
 ```$ make start-app```
 
+### 4 - To stop the application
+
+```$ make stop-app```
+
 ## Requests
 
 ### Reset accounts | POST /reset
