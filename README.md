@@ -75,4 +75,4 @@ To execute the unit tests
 
 This project has ~65% code coverage
 
-![Image](public/img/code-coverage.png?raw=true)
+![Image](src/public/img/code-coverage.png?raw=true)
